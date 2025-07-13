@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="ta">
+<head>
+  <meta charset="UTF-8">
+  <title>விம்ஷோத்தரி தசா (4 ராசிகள் + எதிர் 4)</title>
+  <style>
+    body { font-family: sans-serif; }
+    table { width: 100%; border-collapse: collapse; margin-top: 15px; }
+    th, td { border: 1px solid #000; padding: 6px; text-align: center; }
+    .highlight { background-color: lightgreen; font-weight: bold; }
+  </style>
+</head>
+<body>
+  <h2>விம்ஷோத்தரி தசாபாதம் (லக்கின அடிப்படையில்)</h2>
+
+  <label>தொடக்க லக்கினம்:
+    <select id="lagnaSelect">
+      <option>மேஷம்</option><option>ரிஷபம்</option><option>மிதுனம்</option>
+      <option>கடகம்</option><option>சிம்மம்</option><option>கன்னி</option>
+      <option>துலாம்</option><option>விருச்சிகம்</option><option>தனுசு</option>
+      <option>மகரம்</option><option>கும்பம்</option><option>மீனம்</option>
+    </select>
+  </label>
+
+  <label>தசாபாதம் (1-7, 2-8, ...):
+    <select id="pairSelect">
+      <option value="0">1 - 7</option>
+      <option value="1">2 - 8</option>
+      <option value="2">3 - 9</option>
+      <option value="3">4 - 10</option>
+    </select>
+  </label>
+
+  <label>பிறந்த தேதி:
+    <input type="date" id="dobInput">
+  </label>
+
+  <button onclick="generate()">காண்க</button>
+  <div id="result"></div>
+
+  <script>
+    const rasiList = ["மேஷம்", "ரிஷபம்", "மிதுனம்", "கடகம்", "சிம்மம்", "கன்னி", "துலாம்", "விருச்சிகம்", "தனுசு", "மகரம்", "கும்பம்", "மீனம்"];
+
+    const dashaMapping = {
+      "அஸ்வினி": { planet: "கேது", years: 7 }, "பரணி": { planet: "சுக்கிரன்", years: 20 }, "கார்த்திகை": { planet: "சூரியன்", years: 6 },
+      "ரோஹிணி": { planet: "சந்திரன்", years: 10 }, "மிருகசீரிடம்": { planet: "செவ்வாய்", years: 7 }, "திருவாதிரை": { planet: "ராகு", years: 18 },
+      "புனர்பூசம்": { planet: "குரு", years: 16 }, "பூசம்": { planet: "சனி", years: 19 }, "ஆயில்யம்": { planet: "புதன்", years: 17 },
+      "மகம்": { planet: "கேது", years: 7 }, "பூரம்": { planet: "சுக்கிரன்", years: 20 }, "உத்திரம்": { planet: "சூரியன்", years: 6 },
+      "ஹஸ்தம்": { planet: "சந்திரன்", years: 10 }, "சித்திரை": { planet: "செவ்வாய்", years: 7 }, "சுவாதி": { planet: "ராகு", years: 18 },
+      "விசாகம்": { planet: "குரு", years: 16 }, "அனுஷம்": { planet: "சனி", years: 19 }, "கேட்டை": { planet: "புதன்", years: 17 },
+      "மூலம்": { planet: "கேது", years: 7 }, "பூராடம்": { planet: "சுக்கிரன்", years: 20 }, "உத்திராடம்": { planet: "சூரியன்", years: 6 },
+      "திருவோணம்": { planet: "சந்திரன்", years: 10 }, "அவிட்டம்": { planet: "செவ்வாய்", years: 7 }, "சதயம்": { planet: "ராகு", years: 18 },
+      "பூரட்டாதி": { planet: "குரு", years: 16 }, "உத்திரட்டாதி": { planet: "சனி", years: 19 }, "ரேவதி": { planet: "புதன்", years: 17 }
+    };
+
+    const rasiToPadas = {
+      "மேஷம்": [ { nak: "அஸ்வினி", padas: [1,2,3,4] }, { nak: "பரணி", padas: [1,2,3,4] }, { nak: "கார்த்திகை", padas: [1] } ],
+      "ரிஷபம்": [ { nak: "கார்த்திகை", padas: [2,3,4] }, { nak: "ரோஹிணி", padas: [1,2,3,4] }, { nak: "மிருகசீரிடம்", padas: [1,2] } ],
+      "மிதுனம்": [ { nak: "மிருகசீரிடம்", padas: [3,4] }, { nak: "திருவாதிரை", padas: [1,2,3,4] }, { nak: "புனர்பூசம்", padas: [1,2,3] } ],
+      "கடகம்": [ { nak: "புனர்பூசம்", padas: [4] }, { nak: "பூசம்", padas: [1,2,3,4] }, { nak: "ஆயில்யம்", padas: [1,2,3,4] } ],
+      "சிம்மம்": [ { nak: "மகம்", padas: [1,2,3,4] }, { nak: "பூரம்", padas: [1,2,3,4] }, { nak: "உத்திரம்", padas: [1] } ],
+      "கன்னி": [ { nak: "உத்திரம்", padas: [2,3,4] }, { nak: "ஹஸ்தம்", padas: [1,2,3,4] }, { nak: "சித்திரை", padas: [1,2] } ],
+      "துலாம்": [ { nak: "சித்திரை", padas: [3,4] }, { nak: "சுவாதி", padas: [1,2,3,4] }, { nak: "விசாகம்", padas: [1,2,3] } ],
+      "விருச்சிகம்": [ { nak: "விசாகம்", padas: [4] }, { nak: "அனுஷம்", padas: [1,2,3,4] }, { nak: "கேட்டை", padas: [1,2,3,4] } ],
+      "தனுசு": [ { nak: "மூலம்", padas: [1,2,3,4] }, { nak: "பூராடம்", padas: [1,2,3,4] }, { nak: "உத்திராடம்", padas: [1] } ],
+      "மகரம்": [ { nak: "உத்திராடம்", padas: [2,3,4] }, { nak: "திருவோணம்", padas: [1,2,3,4] }, { nak: "அவிட்டம்", padas: [1,2] } ],
+      "கும்பம்": [ { nak: "அவிட்டம்", padas: [3,4] }, { nak: "சதயம்", padas: [1,2,3,4] }, { nak: "பூரட்டாதி", padas: [1,2,3] } ],
+      "மீனம்": [ { nak: "பூரட்டாதி", padas: [4] }, { nak: "உத்திரட்டாதி", padas: [1,2,3,4] }, { nak: "ரேவதி", padas: [1,2,3,4] } ]
+    };
+
+    function generate() {
+      const lagna = document.getElementById("lagnaSelect").value;
+      const lagnaIndex = rasiList.indexOf(lagna);
+      const offset = parseInt(document.getElementById("pairSelect").value);
+      const dob = new Date(document.getElementById("dobInput").value);
+      const today = new Date();
+
+      let mainRasi = [], oppRasi = [];
+      for (let i = 0; i < 4; i++) {
+        mainRasi.push(rasiList[(lagnaIndex + offset + i) % 12]);
+        oppRasi.push(rasiList[(lagnaIndex + offset + i + 6) % 12]);
+      }
+
+      const leftList = getPadas(mainRasi, dob);
+      const rightList = getPadas(oppRasi, dob);
+
+      let html = `<h3>${mainRasi.join(", ")} ↔ ${oppRasi.join(", ")}</h3>`;
+      html += `<table><tr><th colspan="5">ராசி</th><th colspan="5">எதிர் ராசி</th></tr>
+        <tr><th>ராசி</th><th>நட்சத்திரம்</th><th>பாதம்</th><th>கிரகம்</th><th>காலம்</th>
+            <th>ராசி</th><th>நட்சத்திரம்</th><th>பாதம்</th><th>கிரகம்</th><th>காலம்</th></tr>`;
+
+      const max = Math.max(leftList.length, rightList.length);
+      for (let i = 0; i < max; i++) {
+        const L = leftList[i] || {}, R = rightList[i] || {};
+        const lh = today >= new Date(L.from) && today <= new Date(L.to) ? "highlight" : "";
+        const rh = today >= new Date(R.from) && today <= new Date(R.to) ? "highlight" : "";
+
+        html += `<tr>
+          <td class="${lh}">${L.rasi || ""}</td><td class="${lh}">${L.nak || ""}</td><td class="${lh}">${L.pada || ""}</td><td class="${lh}">${L.graha || ""}</td><td class="${lh}">${L.from || ""}<br>${L.to || ""}</td>
+          <td class="${rh}">${R.rasi || ""}</td><td class="${rh}">${R.nak || ""}</td><td class="${rh}">${R.pada || ""}</td><td class="${rh}">${R.graha || ""}</td><td class="${rh}">${R.from || ""}<br>${R.to || ""}</td>
+        </tr>`;
+      }
+
+      html += "</table>";
+      document.getElementById("result").innerHTML = html;
+    }
+
+    function getPadas(rasis, dob) {
+      const result = [];
+      let current = new Date(dob);
+      for (const rasi of rasis) {
+        const stars = rasiToPadas[rasi] || [];
+        for (const s of stars) {
+          const dash = dashaMapping[s.nak];
+          const days = (dash.years * 365.25) / 4;
+          for (const p of s.padas) {
+            const from = new Date(current);
+            const to = new Date(current.getTime() + days * 86400000);
+            result.push({
+              rasi, nak: s.nak, pada: p, graha: dash.planet,
+              from: from.toISOString().split("T")[0],
+              to: to.toISOString().split("T")[0]
+            });
+            current = to;
+          }
+        }
+      }
+      return result;
+    }
+  </script>
+</body>
+</html>
