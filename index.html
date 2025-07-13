@@ -193,9 +193,7 @@
       const rightList = getPadas(oppRasi, dob);
 
       let html = `<h3>${mainRasi.join(", ")} ↔ ${oppRasi.join(", ")}</h3>`;
-      html += `<table><tr><th colspan="5">ராசி</th><th colspan="5">எதிர் ராசி</th></tr>
-        <tr><th>ராசி</th><th>நட்சத்திரம்</th><th>பாதம்</th><th>கிரகம்</th><th>காலம்</th>
-            <th>ராசி</th><th>நட்சத்திரம்</th><th>பாதம்</th><th>கிரகம்</th><th>காலம்</th></tr>`;
+      html += `<div style="display: flex; flex-direction: column; gap: 15px;">`;
 
       const max = Math.max(leftList.length, rightList.length);
       for (let i = 0; i < max; i++) {
@@ -203,14 +201,28 @@
         const lh = today >= L.fromDate && today <= L.toDate ? "highlight" : "";
         const rh = today >= R.fromDate && today <= R.toDate ? "highlight" : "";
 
-        html += `<tr>
-          <td class="${lh}">${L.rasi || ""}</td><td class="${lh}">${L.nak || ""}</td><td class="${lh}">${L.pada || ""}</td><td class="${lh}">${L.graha || ""}</td><td class="${lh}">${L.from || ""}<br>${L.to || ""}</td>
-          <td class="${rh}">${R.rasi || ""}</td><td class="${rh}">${R.nak || ""}</td><td class="${rh}">${R.pada || ""}</td><td class="${rh}">${R.graha || ""}</td><td class="${rh}">${R.from || ""}<br>${R.to || ""}</td>
-        </tr>`;
-      }
+        html += `
+          <div style="border: 1px solid #ccc; padding: 10px; border-radius: 8px; background: #e8f5e9;">
+            <div class="${lh}">📌 <strong>ராசி:</strong> ${L.rasi || ""}</div>
+            <div class="${lh}">⭐ <strong>நட்சத்திரம்:</strong> ${L.nak || ""}</div>
+            <div class="${lh}">🔢 <strong>பாதம்:</strong> ${L.pada || ""}</div>
+            <div class="${lh}">🪐 <strong>கிரகம்:</strong> ${L.graha || ""}</div>
+            <div class="${lh}">📅 <strong>காலம்:</strong> ${L.from || ""} - ${L.to || ""}</div>
+          </div>
 
-      html += "</table>";
-      document.getElementById("result").innerHTML = html;
+          <div style="border: 1px solid #ccc; padding: 10px; border-radius: 8px; background: #fff3e0;">
+            <div class="${rh}">📌 <strong>எதிர் ராசி:</strong> ${R.rasi || ""}</div>
+            <div class="${rh}">⭐ <strong>நட்சத்திரம்:</strong> ${R.nak || ""}</div>
+            <div class="${rh}">🔢 <strong>பாதம்:</strong> ${R.pada || ""}</div>
+            <div class="${rh}">🪐 <strong>கிரகம்:</strong> ${R.graha || ""}</div>
+            <div class="${rh}">📅 <strong>காலம்:</strong> ${R.from || ""} - ${R.to || ""}</div>
+          </div>
+       `;
+     }
+
+     html += "</div>";
+     document.getElementById("result").innerHTML = html;
+
     }
   </script>
 
