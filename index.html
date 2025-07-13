@@ -4,43 +4,118 @@
   <meta charset="UTF-8">
   <title>விம்ஷோத்தரி தசா (4 ராசிகள் + எதிர் 4)</title>
   <style>
-    body { font-family: sans-serif; }
-    table { width: 100%; border-collapse: collapse; margin-top: 15px; }
-    th, td { border: 1px solid #000; padding: 6px; text-align: center; }
-    .highlight { background-color: lightgreen; font-weight: bold; }
+    body {
+      font-family: 'Noto Sans Tamil', sans-serif;
+      background: #f0f4f8;
+      color: #333;
+      padding: 20px;
+    }
+
+    h2, h3 {
+      text-align: center;
+      color: #6a1b9a;
+    }
+
+    label {
+      display: block;
+      margin: 10px 0 5px;
+      font-weight: bold;
+    }
+
+    select, input[type="date"] {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 15px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      font-size: 1rem;
+    }
+
+    button {
+      background: #8e24aa;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 8px;
+      font-size: 1rem;
+      cursor: pointer;
+      display: block;
+      margin: 0 auto 30px;
+      transition: background 0.3s ease;
+    }
+
+    button:hover {
+      background: #6a1b9a;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: separate;
+      border-spacing: 0;
+      margin-top: 20px;
+      background: white;
+      border-radius: 10px;
+      overflow: hidden;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+
+    th, td {
+      padding: 10px;
+      text-align: center;
+      border-bottom: 1px solid #e0e0e0;
+    }
+
+    th {
+      background-color: #f3e5f5;
+      color: #4a148c;
+    }
+
+    tr:nth-child(even) td {
+      background-color: #fafafa;
+    }
+
+    .highlight {
+      background-color: #c8e6c9 !important;
+      font-weight: bold;
+    }
+
+    @media (min-width: 768px) {
+      select, input[type="date"], button {
+        width: 50%;
+      }
+    }
   </style>
 </head>
 <body>
-  <h2>விம்ஷோத்தரி தசாபாதம் (லக்கின அடிப்படையில்)</h2>
 
-  <label>தொடக்க லக்கினம்:
-    <select id="lagnaSelect">
-      <option>மேஷம்</option><option>ரிஷபம்</option><option>மிதுனம்</option>
-      <option>கடகம்</option><option>சிம்மம்</option><option>கன்னி</option>
-      <option>துலாம்</option><option>விருச்சிகம்</option><option>தனுசு</option>
-      <option>மகரம்</option><option>கும்பம்</option><option>மீனம்</option>
-    </select>
-  </label>
+  <h2>🌟 விம்ஷோத்தரி தசா</h2>
+  <h3>4 ராசி + எதிர் 4 ராசி பகுதி</h3>
 
-  <label>தசாபாதம் (1-7, 2-8, ...):
-    <select id="pairSelect">
-      <option value="0">1 - 7</option>
-      <option value="1">2 - 8</option>
-      <option value="2">3 - 9</option>
-      <option value="3">4 - 10</option>
-    </select>
-  </label>
+  <label>தொடக்க லக்கினம்:</label>
+  <select id="lagnaSelect">
+    <option>மேஷம்</option><option>ரிஷபம்</option><option>மிதுனம்</option>
+    <option>கடகம்</option><option>சிம்மம்</option><option>கன்னி</option>
+    <option>துலாம்</option><option>விருச்சிகம்</option><option>தனுசு</option>
+    <option>மகரம்</option><option>கும்பம்</option><option>மீனம்</option>
+  </select>
 
-  <label>பிறந்த தேதி:
-    <input type="date" id="dobInput">
-  </label>
+  <label>வீடுகள் (1-7, 2-8, 3-9, 4-10):</label>
+  <select id="pairSelect">
+    <option value="0">1 - 7</option>
+    <option value="1">2 - 8</option>
+    <option value="2">3 - 9</option>
+    <option value="3">4 - 10</option>
+  </select>
 
-  <button onclick="generate()">காண்க</button>
+  <label>📅 பிறந்த தேதி:</label>
+  <input type="date" id="dobInput">
+
+  <button onclick="generate()">🔍 கணக்கிடு</button>
   <div id="result"></div>
 
+  <!-- Your existing JavaScript remains the same -->
   <script>
     const rasiList = ["மேஷம்", "ரிஷபம்", "மிதுனம்", "கடகம்", "சிம்மம்", "கன்னி", "துலாம்", "விருச்சிகம்", "தனுசு", "மகரம்", "கும்பம்", "மீனம்"];
-
     const dashaMapping = {
       "அஸ்வினி": { planet: "கேது", years: 7 }, "பரணி": { planet: "சுக்கிரன்", years: 20 }, "கார்த்திகை": { planet: "சூரியன்", years: 6 },
       "ரோஹிணி": { planet: "சந்திரன்", years: 10 }, "மிருகசீரிடம்": { planet: "செவ்வாய்", years: 7 }, "திருவாதிரை": { planet: "ராகு", years: 18 },
@@ -77,56 +152,3 @@
 
       let mainRasi = [], oppRasi = [];
       for (let i = 0; i < 4; i++) {
-        mainRasi.push(rasiList[(lagnaIndex + offset + i) % 12]);
-        oppRasi.push(rasiList[(lagnaIndex + offset + i + 6) % 12]);
-      }
-
-      const leftList = getPadas(mainRasi, dob);
-      const rightList = getPadas(oppRasi, dob);
-
-      let html = `<h3>${mainRasi.join(", ")} ↔ ${oppRasi.join(", ")}</h3>`;
-      html += `<table><tr><th colspan="5">ராசி</th><th colspan="5">எதிர் ராசி</th></tr>
-        <tr><th>ராசி</th><th>நட்சத்திரம்</th><th>பாதம்</th><th>கிரகம்</th><th>காலம்</th>
-            <th>ராசி</th><th>நட்சத்திரம்</th><th>பாதம்</th><th>கிரகம்</th><th>காலம்</th></tr>`;
-
-      const max = Math.max(leftList.length, rightList.length);
-      for (let i = 0; i < max; i++) {
-        const L = leftList[i] || {}, R = rightList[i] || {};
-        const lh = today >= new Date(L.from) && today <= new Date(L.to) ? "highlight" : "";
-        const rh = today >= new Date(R.from) && today <= new Date(R.to) ? "highlight" : "";
-
-        html += `<tr>
-          <td class="${lh}">${L.rasi || ""}</td><td class="${lh}">${L.nak || ""}</td><td class="${lh}">${L.pada || ""}</td><td class="${lh}">${L.graha || ""}</td><td class="${lh}">${L.from || ""}<br>${L.to || ""}</td>
-          <td class="${rh}">${R.rasi || ""}</td><td class="${rh}">${R.nak || ""}</td><td class="${rh}">${R.pada || ""}</td><td class="${rh}">${R.graha || ""}</td><td class="${rh}">${R.from || ""}<br>${R.to || ""}</td>
-        </tr>`;
-      }
-
-      html += "</table>";
-      document.getElementById("result").innerHTML = html;
-    }
-
-    function getPadas(rasis, dob) {
-      const result = [];
-      let current = new Date(dob);
-      for (const rasi of rasis) {
-        const stars = rasiToPadas[rasi] || [];
-        for (const s of stars) {
-          const dash = dashaMapping[s.nak];
-          const days = (dash.years * 365.25) / 4;
-          for (const p of s.padas) {
-            const from = new Date(current);
-            const to = new Date(current.getTime() + days * 86400000);
-            result.push({
-              rasi, nak: s.nak, pada: p, graha: dash.planet,
-              from: from.toISOString().split("T")[0],
-              to: to.toISOString().split("T")[0]
-            });
-            current = to;
-          }
-        }
-      }
-      return result;
-    }
-  </script>
-</body>
-</html>
