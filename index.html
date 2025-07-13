@@ -152,3 +152,57 @@
 
       let mainRasi = [], oppRasi = [];
       for (let i = 0; i < 4; i++) {
+        mainRasi.push(rasiList[(lagnaIndex + offset + i) % 12]);
+        oppRasi.push(rasiList[(lagnaIndex + offset + i + 6) % 12]);
+      }
+
+      const leftList = getPadas(mainRasi, dob);
+      const rightList = getPadas(oppRasi, dob);
+
+      let html = `<h3>${mainRasi.join(", ")} ↔ ${oppRasi.join(", ")}</h3>`;
+      html += `<table><tr><th colspan="5">ராசி</th><th colspan="5">எதிர் ராசி</th></tr>
+        <tr><th>ராசி</th><th>நட்சத்திரம்</th><th>பாதம்</th><th>கிரகம்</th><th>காலம்</th>
+            <th>ராசி</th><th>நட்சத்திரம்</th><th>பாதம்</th><th>கிரகம்</th><th>காலம்</th></tr>`;
+
+      const max = Math.max(leftList.length, rightList.length);
+      for (let i = 0; i < max; i++) {
+        const L = leftList[i] || {}, R = rightList[i] || {};
+        const lh = today >= new Date(L.from) && today <= new Date(L.to) ? "highlight" : "";
+        const rh = today >= new Date(R.from) && today <= new Date(R.to) ? "highlight" : "";
+
+        html += `<tr>
+          <td class="${lh}">${L.rasi || ""}</td><td class="${lh}">${L.nak || ""}</td><td class="${lh}">${L.pada || ""}</td><td class="${lh}">${L.graha || ""}</td><td class="${lh}">${L.from || ""}<br>${L.to || ""}</td>
+          <td class="${rh}">${R.rasi || ""}</td><td class="${rh}">${R.nak || ""}</td><td class="${rh}">${R.pada || ""}</td><td class="${rh}">${R.graha || ""}</td><td class="${rh}">${R.from || ""}<br>${R.to || ""}</td>
+        </tr>`;
+      }
+
+      html += "</table>";
+      document.getElementById("result").innerHTML = html;
+    }
+
+    function getPadas(rasis, dob) {
+      const result = [];
+      let current = new Date(dob);
+      for (const rasi of rasis) {
+        const stars = rasiToPadas[rasi] || [];
+        for (const s of stars) {
+          const dash = dashaMapping[s.nak];
+          const days = (dash.years * 365.25) / 4;
+          for (const p of s.padas) {
+            const from = new Date(current);
+            const to = new Date(current.getTime() + days * 86400000);
+            result.push({
+              rasi, nak: s.nak, pada: p, graha: dash.planet,
+              from: from.toISOString().split("T")[0],
+              to: to.toISOString().split("T")[0]
+            });
+            current = to;
+          }
+        }
+      }
+      return result;
+    }
+  </script>
+
+</body>
+</html>
