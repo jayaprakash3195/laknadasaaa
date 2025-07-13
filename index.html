@@ -41,39 +41,56 @@
       cursor: pointer;
       display: block;
       margin: 0 auto 30px;
+      transition: background 0.3s ease;
     }
 
     button:hover {
       background: #6a1b9a;
     }
 
-    .box {
-      padding: 15px;
-      border-radius: 10px;
-      margin-bottom: 15px;
-      border: 2px solid #ccc;
-      background-color: white;
+    .table-wrapper {
+      overflow-x: auto;
     }
 
-    .box.current {
-      border: 3px solid #388e3c;
-      background-color: #e8f5e9;
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 15px;
+      min-width: 900px;
     }
 
-    .box.opposite.current {
-      border: 3px solid #e65100;
-      background-color: #fff3e0;
+    th, td {
+      border: 1px solid #999;
+      padding: 10px;
+      text-align: center;
     }
 
-    .tag {
+    th {
+      background-color: #f3e5f5;
+      color: #4a148c;
+      position: sticky;
+      top: 0;
+      z-index: 1;
+    }
+
+    tr:nth-child(even) td {
+      background-color: #fafafa;
+    }
+
+    .highlight {
+      background-color: #d0f0c0 !important;
       font-weight: bold;
-      color: #d32f2f;
-      margin-top: 5px;
+      border-left: 5px solid #4caf50;
     }
 
-    @media (min-width: 768px) {
+    @media (max-width: 768px) {
       select, input[type="date"], button {
-        width: 50%;
+        width: 100%;
+      }
+
+      th, td {
+        font-size: 0.85rem;
+        padding: 6px;
       }
     }
   </style>
@@ -186,36 +203,27 @@
       const rightList = getPadas(oppRasi, dob);
 
       let html = `<h3>${mainRasi.join(", ")} ↔ ${oppRasi.join(", ")}</h3>`;
+      html += `<div class="table-wrapper"><table><thead>
+      <tr><th colspan="5">ராசி</th><th colspan="5">எதிர் ராசி</th></tr>
+      <tr><th>ராசி</th><th>நட்சத்திரம்</th><th>பாதம்</th><th>கிரகம்</th><th>காலம்</th>
+          <th>ராசி</th><th>நட்சத்திரம்</th><th>பாதம்</th><th>கிரகம்</th><th>காலம்</th></tr></thead><tbody>`;
 
-      for (let i = 0; i < Math.max(leftList.length, rightList.length); i++) {
-        const L = leftList[i] || {};
-        const R = rightList[i] || {};
-        const isCurrentL = today >= L.fromDate && today <= L.toDate;
-        const isCurrentR = today >= R.fromDate && today <= R.toDate;
+      const max = Math.max(leftList.length, rightList.length);
+      for (let i = 0; i < max; i++) {
+        const L = leftList[i] || {}, R = rightList[i] || {};
+        const lh = today >= L.fromDate && today <= L.toDate ? "highlight" : "";
+        const rh = today >= R.fromDate && today <= R.toDate ? "highlight" : "";
 
-        html += `
-          <div class="box ${isCurrentL ? 'current' : ''}">
-            <strong>📌 ராசி:</strong> ${L.rasi || ""}<br>
-            <strong>⭐ நட்சத்திரம்:</strong> ${L.nak || ""}<br>
-            <strong>🔢 பாதம்:</strong> ${L.pada || ""}<br>
-            <strong>🪐 கிரகம்:</strong> ${L.graha || ""}<br>
-            <strong>📅 காலம்:</strong> ${L.from || ""} - ${L.to || ""}
-            ${isCurrentL ? `<div class="tag">🟢 நடப்பு தசை</div>` : ""}
-          </div>
-
-          <div class="box opposite ${isCurrentR ? 'current' : ''}">
-            <strong>📌 எதிர் ராசி:</strong> ${R.rasi || ""}<br>
-            <strong>⭐ நட்சத்திரம்:</strong> ${R.nak || ""}<br>
-            <strong>🔢 பாதம்:</strong> ${R.pada || ""}<br>
-            <strong>🪐 கிரகம்:</strong> ${R.graha || ""}<br>
-            <strong>📅 காலம்:</strong> ${R.from || ""} - ${R.to || ""}
-            ${isCurrentR ? `<div class="tag">🟢 நடப்பு தசை</div>` : ""}
-          </div>
-        `;
+        html += `<tr>
+          <td class="${lh}">${L.rasi || ""}</td><td class="${lh}">${L.nak || ""}</td><td class="${lh}">${L.pada || ""}</td><td class="${lh}">${L.graha || ""}</td><td class="${lh}">${L.from || ""}<br>${L.to || ""}</td>
+          <td class="${rh}">${R.rasi || ""}</td><td class="${rh}">${R.nak || ""}</td><td class="${rh}">${R.pada || ""}</td><td class="${rh}">${R.graha || ""}</td><td class="${rh}">${R.from || ""}<br>${R.to || ""}</td>
+        </tr>`;
       }
 
+      html += "</tbody></table></div>";
       document.getElementById("result").innerHTML = html;
     }
   </script>
+
 </body>
 </html>
