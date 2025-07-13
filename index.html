@@ -176,6 +176,19 @@
       html += "</table>";
       document.getElementById("result").innerHTML = html;
     }
+     function formatDateTamil(date) {
+       const tamilMonths = [
+         "ஜனவரி", "பிப்ரவரி", "மார்ச்", "ஏப்ரல்", "மே", "ஜூன்",
+         "ஜூலை", "ஆகஸ்ட்", "செப்டம்பர்", "அக்டோபர்", "நவம்பர்", "டிசம்பர்"
+       ];
+
+       const d = new Date(date);
+       const day = d.getDate().toString().padStart(2, '0');
+       const month = tamilMonths[d.getMonth()];
+       const year = d.getFullYear();
+
+       return `${day} ${month} ${year}`;
+     }
 
     function getPadas(rasis, dob) {
       const result = [];
@@ -190,8 +203,10 @@
             const to = new Date(current.getTime() + days * 86400000);
             result.push({
               rasi, nak: s.nak, pada: p, graha: dash.planet,
-              from: from.toISOString().split("T")[0],
-              to: to.toISOString().split("T")[0]
+              from: formatDateTamil(from),
+              to: formatDateTamil(to)
+
+
             });
             current = to;
           }
