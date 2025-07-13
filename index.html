@@ -41,38 +41,34 @@
       cursor: pointer;
       display: block;
       margin: 0 auto 30px;
-      transition: background 0.3s ease;
     }
 
     button:hover {
       background: #6a1b9a;
     }
 
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      margin-top: 15px;
-      border: 2px solid #000;
+    .box {
+      padding: 15px;
+      border-radius: 10px;
+      margin-bottom: 15px;
+      border: 2px solid #ccc;
+      background-color: white;
     }
 
-    th, td {
-      border: 2px solid #000;
-      padding: 10px;
-      text-align: center;
+    .box.current {
+      border: 3px solid #388e3c;
+      background-color: #e8f5e9;
     }
 
-    th {
-      background-color: #f3e5f5;
-      color: #4a148c;
+    .box.opposite.current {
+      border: 3px solid #e65100;
+      background-color: #fff3e0;
     }
 
-    tr:nth-child(even) td {
-      background-color: #fafafa;
-    }
-
-    .highlight {
-      background-color: #c8e6c9 !important;
+    .tag {
       font-weight: bold;
+      color: #d32f2f;
+      margin-top: 5px;
     }
 
     @media (min-width: 768px) {
@@ -111,10 +107,7 @@
 
   <script>
     const rasiList = ["மேஷம்", "ரிஷபம்", "மிதுனம்", "கடகம்", "சிம்மம்", "கன்னி", "துலாம்", "விருச்சிகம்", "தனுசு", "மகரம்", "கும்பம்", "மீனம்"];
-    const tamilMonths = [
-      "ஜனவரி", "பிப்ரவரி", "மார்ச்", "ஏப்ரல்", "மே", "ஜூன்",
-      "ஜூலை", "ஆகஸ்ட்", "செப்டம்பர்", "அக்டோபர்", "நவம்பர்", "டிசம்பர்"
-    ];
+    const tamilMonths = ["ஜனவரி", "பிப்ரவரி", "மார்ச்", "ஏப்ரல்", "மே", "ஜூன்", "ஜூலை", "ஆகஸ்ட்", "செப்டம்பர்", "அக்டோபர்", "நவம்பர்", "டிசம்பர்"];
 
     const dashaMapping = {
       "அஸ்வினி": { planet: "கேது", years: 7 }, "பரணி": { planet: "சுக்கிரன்", years: 20 }, "கார்த்திகை": { planet: "சூரியன்", years: 6 },
@@ -193,38 +186,36 @@
       const rightList = getPadas(oppRasi, dob);
 
       let html = `<h3>${mainRasi.join(", ")} ↔ ${oppRasi.join(", ")}</h3>`;
-      html += `<div style="display: flex; flex-direction: column; gap: 15px;">`;
 
-      const max = Math.max(leftList.length, rightList.length);
-      for (let i = 0; i < max; i++) {
-        const L = leftList[i] || {}, R = rightList[i] || {};
-        const lh = today >= L.fromDate && today <= L.toDate ? "highlight" : "";
-        const rh = today >= R.fromDate && today <= R.toDate ? "highlight" : "";
+      for (let i = 0; i < Math.max(leftList.length, rightList.length); i++) {
+        const L = leftList[i] || {};
+        const R = rightList[i] || {};
+        const isCurrentL = today >= L.fromDate && today <= L.toDate;
+        const isCurrentR = today >= R.fromDate && today <= R.toDate;
 
         html += `
-          <div style="border: 1px solid #ccc; padding: 10px; border-radius: 8px; background: #e8f5e9;">
-            <div class="${lh}">📌 <strong>ராசி:</strong> ${L.rasi || ""}</div>
-            <div class="${lh}">⭐ <strong>நட்சத்திரம்:</strong> ${L.nak || ""}</div>
-            <div class="${lh}">🔢 <strong>பாதம்:</strong> ${L.pada || ""}</div>
-            <div class="${lh}">🪐 <strong>கிரகம்:</strong> ${L.graha || ""}</div>
-            <div class="${lh}">📅 <strong>காலம்:</strong> ${L.from || ""} - ${L.to || ""}</div>
+          <div class="box ${isCurrentL ? 'current' : ''}">
+            <strong>📌 ராசி:</strong> ${L.rasi || ""}<br>
+            <strong>⭐ நட்சத்திரம்:</strong> ${L.nak || ""}<br>
+            <strong>🔢 பாதம்:</strong> ${L.pada || ""}<br>
+            <strong>🪐 கிரகம்:</strong> ${L.graha || ""}<br>
+            <strong>📅 காலம்:</strong> ${L.from || ""} - ${L.to || ""}
+            ${isCurrentL ? `<div class="tag">🟢 நடப்பு தசை</div>` : ""}
           </div>
 
-          <div style="border: 1px solid #ccc; padding: 10px; border-radius: 8px; background: #fff3e0;">
-            <div class="${rh}">📌 <strong>எதிர் ராசி:</strong> ${R.rasi || ""}</div>
-            <div class="${rh}">⭐ <strong>நட்சத்திரம்:</strong> ${R.nak || ""}</div>
-            <div class="${rh}">🔢 <strong>பாதம்:</strong> ${R.pada || ""}</div>
-            <div class="${rh}">🪐 <strong>கிரகம்:</strong> ${R.graha || ""}</div>
-            <div class="${rh}">📅 <strong>காலம்:</strong> ${R.from || ""} - ${R.to || ""}</div>
+          <div class="box opposite ${isCurrentR ? 'current' : ''}">
+            <strong>📌 எதிர் ராசி:</strong> ${R.rasi || ""}<br>
+            <strong>⭐ நட்சத்திரம்:</strong> ${R.nak || ""}<br>
+            <strong>🔢 பாதம்:</strong> ${R.pada || ""}<br>
+            <strong>🪐 கிரகம்:</strong> ${R.graha || ""}<br>
+            <strong>📅 காலம்:</strong> ${R.from || ""} - ${R.to || ""}
+            ${isCurrentR ? `<div class="tag">🟢 நடப்பு தசை</div>` : ""}
           </div>
-       `;
-     }
+        `;
+      }
 
-     html += "</div>";
-     document.getElementById("result").innerHTML = html;
-
+      document.getElementById("result").innerHTML = html;
     }
   </script>
-
 </body>
 </html>
